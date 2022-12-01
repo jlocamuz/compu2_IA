@@ -13,6 +13,7 @@ def manipular_imagenes(carpeta, carpeta_nueva):
     tabla_de_verdad = []
     for i in contenido:
         datos_foto = [] # renglon tabla d verdad
+        print('Procesando imagen...')
         img = cv2.imread('./imagenes/'+i)
 
         if i[1] == 'A':

@@ -3,6 +3,7 @@ import math
 import matplotlib.pyplot as plt
 from probando2 import *
 import random
+import time 
 
 def sigmoid(x):
 	sig = 1 / (1 + math.exp(-x))
@@ -102,8 +103,12 @@ class RedNeuronal:
 
 
 if __name__ == '__main__':
+	inicio_de_tiempo = time.time()
 	personas = manipular_imagenes('./imagenes', './modificadas/')
 	nro_entradas = len(personas[0]) - 1  # pq el ultimo elemento es 0-A y 1-B
 	lista = [nro_entradas, 100, 1]
 	red_neuronal = RedNeuronal(lista) # tomar primer parametro de lista como entradas.
 	red_neuronal.alimentarRed(personas)
+	final_de_tiempo = time.time()
+	tiempo_transcurrido = final_de_tiempo - inicio_de_tiempo
+	print("\nTomo %d segundos." % (tiempo_transcurrido))
