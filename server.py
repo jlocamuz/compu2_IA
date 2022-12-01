@@ -1,6 +1,9 @@
 #!/usr/bin/python3
 import socket, os, threading, datetime
 from probando2 import *
+import pickle
+from red_neuronal import *
+import time
 
 MAX_SIZE=512
 KEY="12135"
@@ -18,22 +21,33 @@ def th_server(sock_full):
     ip=str(addr)
     stage = 0
     while True:
-        msg = sock.recv(MAX_SIZE).decode()
-        print("Recibido: %s" % msg)
+        msg = sock.recv(MAX_SIZE)
+        msg_d = pickle.loads(msg)
+        print("Recibido: %s" % msg_d)
         resp = 'imagenes procesadas'
+
+        # codigo
+        inicio_de_tiempo = time.time()
         personas = manipular_imagenes('./imagenes', './modificadas/')
+        nro_entradas = len(personas[0]) - 1  # pq el ultimo elemento es 0-A y 1-B
+        lista = [nro_entradas, 100, 1]
+        red_neuronal = RedNeuronal(lista) # tomar primer parametro de lista como entradas.
+        red_neuronal.alimentarRed(personas)
+        final_de_tiempo = time.time()
+        tiempo_transcurrido = final_de_tiempo - inicio_de_tiempo
+        print("\nTomo %d segundos." % (tiempo_transcurrido))
+
 
         if msg[0:4] == "exit":
             resp = "200"
             exit = True
-
-        sock.send(resp.encode("ascii")) # ************
-        if exit:
-            data = "%s|%s|%s|%s|%s" % (TODAY,name,email,key,ip)
-            data = data.replace('\n', '').replace('\r', '')
-            print(data)
-            sock.close()
-            break
+        rta_s = pickle.dumps(resp)
+        sock.send(rta_s) # ************
+        data = "%s|%s|%s|%s|%s" % (TODAY,name,email,key,ip)
+        print(data)
+        sock.close()
+        
+        break
             
 
 

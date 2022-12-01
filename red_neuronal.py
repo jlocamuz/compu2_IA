@@ -17,7 +17,7 @@ class Perceptron:
 
 
 	def sumatoria(self, entrada):
-		print('sumatoria')
+		#print('sumatoria')
 		# el cero siempre para el bias!
 		z = 0  # inicializo en 0
 		for i in range(len(entrada)):
@@ -25,7 +25,7 @@ class Perceptron:
 		self.resultado = sigmoid(z)
 
 	def actualizar_pesos(self, lr, entrada):
-		print('actualizando pesos')
+		#print('actualizando pesos')
 		for i in range(len(entrada)):
 			delta = self.error * lr * entrada[i]
 			self.pesos[i] += delta
@@ -58,14 +58,14 @@ class RedNeuronal:
 		bias = 1
 		x1 = 0
 		while errorA > 0.005 and errorB > 0.005:
-			print(f'\n\n\n***epoch {epochs}***\n\n')
+			print(f'\n***epoch {epochs}***\n')
 			for indice, dato in enumerate(data):
-				print(f'--------------------indice data {indice} epoch {epochs}--------------------')
+				#print(f'--------------------indice data {indice} epoch {epochs}--------------------')
 				try:
 					for indiceCapa, capa in enumerate(self.red):
-						print(f'se procesara {len(capa)} neuronas')
+						#print(f'se procesara {len(capa)} neuronas')
 						for indice_neurona, neurona in enumerate(capa):
-							print(f'neurona {indice_neurona} en capa {neurona.capa}')
+							#print(f'neurona {indice_neurona} en capa {neurona.capa}')
 							if neurona.capa == 0:
 								# PRIMERA CAPA
 								# entran mis data.shape[:-1]  --> 1 x peso!  me queda un peso. para el bias :)
@@ -86,7 +86,8 @@ class RedNeuronal:
 
 							# ultima capa. 
 							if len(capa) == 1:
-								plt.plot(x1, abs(neurona.error),"o", color=color)
+								#plt.plot(x1, abs(neurona.error),"o", color=color)
+								pass
 
 							# for i in neurona.pesos:
 							#   plot2.plot(x,i,".",color='black')
@@ -95,10 +96,10 @@ class RedNeuronal:
 				except OverflowError:
 					print('pass')
 			epochs += 1
-		plt.plot(x1, abs(errorA), label = "ERRORES Claudia",color='green')
-		plt.plot(x1, abs(errorB), label = "ERRORES Rosario", color='orange')
-		plt.legend()
-		plt.show()
+		#plt.plot(x1, abs(errorA), label = "ERRORES Claudia",color='green')
+		#plt.plot(x1, abs(errorB), label = "ERRORES Rosario", color='orange')
+		#plt.legend()
+		#plt.show()
 
 
 
