@@ -5,6 +5,7 @@ from probando2 import *
 import random
 import time 
 
+
 def sigmoid(x):
 	sig = 1 / (1 + math.exp(-x))
 	return sig
@@ -47,7 +48,7 @@ class RedNeuronal:
 
 
 
-	def alimentarRed(self, data):
+	def alimentarRed(self, data, sock):
 		errorA = 1
 		errorB = 1
 		plt.xlabel('x')
@@ -58,7 +59,7 @@ class RedNeuronal:
 		bias = 1
 		x1 = 0
 		while errorA > 0.005 and errorB > 0.005:
-			print(f'\n***epoch {epochs}***\n')
+			print(f'\n***epoch {epochs}*** desde socket {sock}\n')
 			for indice, dato in enumerate(data):
 				#print(f'--------------------indice data {indice} epoch {epochs}--------------------')
 				try:
@@ -86,8 +87,7 @@ class RedNeuronal:
 
 							# ultima capa. 
 							if len(capa) == 1:
-								#plt.plot(x1, abs(neurona.error),"o", color=color)
-								pass
+								plt.plot(x1, abs(neurona.error),"o", color=color)
 
 							# for i in neurona.pesos:
 							#   plot2.plot(x,i,".",color='black')
@@ -96,9 +96,9 @@ class RedNeuronal:
 				except OverflowError:
 					print('pass')
 			epochs += 1
-		#plt.plot(x1, abs(errorA), label = "ERRORES Claudia",color='green')
-		#plt.plot(x1, abs(errorB), label = "ERRORES Rosario", color='orange')
-		#plt.legend()
+		plt.plot(x1, abs(errorA), label = "ERRORES Claudia",color='green')
+		plt.plot(x1, abs(errorB), label = "ERRORES Rosario", color='orange')
+		plt.legend()
 		#plt.show()
 
 
