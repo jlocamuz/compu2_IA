@@ -2,7 +2,7 @@
 import socket, os, threading, datetime
 from probando2 import *
 import pickle
-from red_neuronal import *
+from red_neuronal2 import *
 import time
 from logear import *
 

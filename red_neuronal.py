@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from probando2 import *
 import random
 import time 
-
+from multiprocessing import Pool
 
 def sigmoid(x):
 	sig = 1 / (1 + math.exp(-x))
@@ -15,7 +15,6 @@ class Perceptron:
 		self.capa = capa
 		self.neurona = neurona
 		self.pesos = [random.uniform(-0.01, 0.01) for _ in range(nro_entradas+1)]
-
 
 	def sumatoria(self, entrada):
 		#print('sumatoria')
@@ -31,6 +30,16 @@ class Perceptron:
 			delta = self.error * lr * entrada[i]
 			self.pesos[i] += delta
 
+	def alimentar_neurona(self,red, dato, lr, bias):
+		if self.capa == 0:
+			entrada = [bias] + list(dato[:-1])
+
+		else:
+			resultados_anteriores = [i.resultado for i in red[self.capa - 1]]
+			entrada = [bias] + resultados_anteriores
+		self.sumatoria(entrada)
+		self.error = dato[-1] - self.resultado
+		self.actualizar_pesos(lr, entrada)
 
 class RedNeuronal:
 	def __init__(self, x):
@@ -47,59 +56,23 @@ class RedNeuronal:
 			(self.red).append(lista_neuronas)
 
 
-
-	def alimentarRed(self, data, sock):
-		errorA = 1
-		errorB = 1
-		plt.xlabel('x')
-		plt.ylabel('errores')
-		plt.grid(True)
+	def alimentarRed(self, data, sock=None):
 		lr = 0.1
 		epochs = 0
 		bias = 1
-		x1 = 0
-		while errorA > 0.005 and errorB > 0.005:
+
+
+		while epochs < 5:
 			print(f'\n***epoch {epochs}*** desde socket {sock}\n')
 			for indice, dato in enumerate(data):
 				#print(f'--------------------indice data {indice} epoch {epochs}--------------------')
-				try:
-					for indiceCapa, capa in enumerate(self.red):
-						#print(f'se procesara {len(capa)} neuronas')
-						for indice_neurona, neurona in enumerate(capa):
-							#print(f'neurona {indice_neurona} en capa {neurona.capa}')
-							if neurona.capa == 0:
-								# PRIMERA CAPA
-								# entran mis data.shape[:-1]  --> 1 x peso!  me queda un peso. para el bias :)
-								entrada = [bias] + list(dato[:-1])
+				for capa in self.red: 
+					with Pool(processes=8) as pool:
+						multiple_results = [pool.apply_async(neurona.alimentar_neurona(self.red, dato,lr, bias), ()) for neurona in capa]
+		
 
-							else:
-								# CAPAS INTERMEDIAS
-								resultados_anteriores = [i.resultado for i in self.red[neurona.capa - 1]]
-								entrada = [bias] + resultados_anteriores
-							neurona.sumatoria(entrada)
-							neurona.error = dato[-1] - neurona.resultado
-							if indice % 2 == 0:
-								color = 'green'
-								errorA = abs(neurona.error)
-							else:
-								color = 'orange'
-								errorB = abs(neurona.error)
-
-							# ultima capa. 
-							if len(capa) == 1:
-								plt.plot(x1, abs(neurona.error),"o", color=color)
-
-							# for i in neurona.pesos:
-							#   plot2.plot(x,i,".",color='black')
-							x1 += 0.1
-							neurona.actualizar_pesos(lr, entrada)
-				except OverflowError:
-					print('pass')
 			epochs += 1
-		plt.plot(x1, abs(errorA), label = "ERRORES Claudia",color='green')
-		plt.plot(x1, abs(errorB), label = "ERRORES Rosario", color='orange')
-		plt.legend()
-		#plt.show()
+
 
 
 
