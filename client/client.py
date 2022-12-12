@@ -40,6 +40,7 @@ def animate():
 t = threading.Thread(target=animate)
 t.start()
 
+
 while connected == True:
 
     # MLP SETTINGS

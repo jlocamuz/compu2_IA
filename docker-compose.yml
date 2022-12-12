@@ -46,8 +46,7 @@ services:
 
     # The command to execute once the image is created.
     # The following command will execute "python ./client.py".
-    command: python3 client.py
-
+    command: bash -c "python3 client.py"
     # The keyword 'network_mode' is used to define the network type.
     # Here we define that the container can access to the 'localhost' of the computer.
     network_mode: host
@@ -57,3 +56,4 @@ services:
     # Here, we want the 'client' service to wait until the 'server' service is ready.
     depends_on:
       - server
+
