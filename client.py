@@ -18,7 +18,6 @@ parser.add_argument("--identif", type=str, default="57190")
 
 args = parser.parse_args()
 
-
 client = socket.socket()
 client.connect(ADDR)
 connected = True
@@ -37,6 +36,17 @@ while connected == True:
     msg = [LR, HIDDEN_LAYER_PERCEPTRONS, ITERACIONES, FOLDER, EXTENTION, IDENTIF]
     msg_s = pickle.dumps(msg)
     client.send(msg_s)
+    rta = client.recv(1024)
+    rta_des = pickle.loads(rta)
+    print(rta_des)
+
+    # mandamos test_img que queremos probar...
+    test_img = [f"6A{IDENTIF}", f"7A{IDENTIF}", f"8A{IDENTIF}", f"6B{IDENTIF}", f"7B{IDENTIF}", f"8B{IDENTIF}"]
+
+    msg_s = pickle.dumps(test_img)
+    client.send(msg_s)
+
+    # recibimos resultado 
     rta = client.recv(1024)
     rta_des = pickle.loads(rta)
     print(rta_des)

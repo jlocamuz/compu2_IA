@@ -73,14 +73,33 @@ def th_server(sock_full):
 		for i in tqdm.tqdm(range(ITERACIONES)):
 			mlp.train(img_list)
 
-		# RESPUESTA A CLIENT
+		# RESPUESTA A CLIENT --> para decirle que proporcione imagen de prueba 
 
-		resp = 'red entrenada...'
+		resp = 'RED ENTRENADA'
 		rta_s = pickle.dumps(resp, protocol=2)
 		sock.send(rta_s) # ************
-		data = "%s|%s|%s|%s|%s" % (TODAY,name,email,key,ip) + '\n'
-		print(data)
-		escribir_log(data, locki, str(addr[1]))
+
+		# RECIBIMOS IMAGEN QUE EL CLIENTE QUIERE PROBAR...
+		msg = sock.recv(MAX_SIZE)
+		TEST_IMAGES = pickle.loads(msg)
+
+		
+		
+		try:
+			resultados = ''
+			for test_img in TEST_IMAGES:
+				flat_img = cv2.imread(f"{BASE_PATH}{test_img}.{EXTENTION}", 0).flatten()/255
+				r = mlp.run(flat_img)
+				resultados += f"EXAMPLE: {test_img}.{EXTENTION} --> {r}\n"
+			rta_s = pickle.dumps(resultados, protocol=2)
+			sock.send(rta_s) # ************
+		except Exception:
+			pass
+
+		# LOGGER 
+		#data = "%s|%s|%s|%s|%s" % (TODAY,name,email,key,ip) + '\n'
+		#print(data)
+		#escribir_log(data, locki, str(addr[1]))
 
 		sock.close()
 		
