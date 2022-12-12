@@ -44,3 +44,14 @@ def manipular_imagenes(carpeta, carpeta_nueva):
     #print(len(tabla_de_verdad[0])) # 7681 = pixeles + persona
 
     return tabla_de_verdad
+
+def manipular_imagen(path):
+    print(path)
+    tabla_de_verdad = []
+    img = cv2.imread(path)
+    for j in img:
+        for k in j: 
+            tabla_de_verdad.append((k[0])/255)    
+    
+    return tabla_de_verdad
+
