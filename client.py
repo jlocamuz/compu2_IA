@@ -2,6 +2,10 @@ import socket
 from datetime import datetime
 import pickle
 import argparse
+import time
+import itertools
+import threading
+import sys
 
 PORT = 2222
 SERVER = '127.0.1.1' 
@@ -22,8 +26,21 @@ client = socket.socket()
 client.connect(ADDR)
 connected = True
 
-while connected == True:
+done = False
+#here is the animation
+def animate():
+    for c in itertools.cycle(['|', '/', '-', '\\']):
+        if done:
+            break
+        sys.stdout.write('\rServer entrenando red..' + c)
+        sys.stdout.flush()
+        time.sleep(0.1)
+    sys.stdout.write('\rDone!')
 
+t = threading.Thread(target=animate)
+t.start()
+
+while connected == True:
 
     # MLP SETTINGS
     LR = args.learningrate
@@ -36,6 +53,10 @@ while connected == True:
     msg = [LR, HIDDEN_LAYER_PERCEPTRONS, ITERACIONES, FOLDER, EXTENTION, IDENTIF]
     msg_s = pickle.dumps(msg)
     client.send(msg_s)
+
+    # loading...
+
+
     rta = client.recv(1024)
     rta_des = pickle.loads(rta)
     print(rta_des)
@@ -49,5 +70,7 @@ while connected == True:
     # recibimos resultado 
     rta = client.recv(1024)
     rta_des = pickle.loads(rta)
+    print('')
     print(rta_des)
     connected = False
+    done = True

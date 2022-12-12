@@ -64,7 +64,7 @@ def th_server(sock_full):
 		
 		print("CREANDO RED NEURONAL")
 		# [100] * 1 
-		print([HIDDEN_LAYER_PERCEPTRONS])
+
 		mlp = MLP(IMG_SIZE, [HIDDEN_LAYER_PERCEPTRONS] + [1], learning_rate=LR)
 
 		print("ENTRENANDO RED NEURONAL")
@@ -96,10 +96,10 @@ def th_server(sock_full):
 		except Exception:
 			pass
 
-		# LOGGER 
-		#data = "%s|%s|%s|%s|%s" % (TODAY,name,email,key,ip) + '\n'
-		#print(data)
-		#escribir_log(data, locki, str(addr[1]))
+		
+		#LOGGER 
+		data_log = "%s|%s|%s|%s|%s" % (TODAY,name,email,key,ip) + '\n'
+		escribir_log(data_log, locki, str(addr[1]))
 
 		sock.close()
 		
@@ -118,6 +118,7 @@ port= 2222 # ****
 serversocket.bind((host, port))
 
 # queue up to 5 requests
+print('SERVER ESPERANDO CONEXIONES...')
 serversocket.listen(5)
 locki = threading.Lock()
 
