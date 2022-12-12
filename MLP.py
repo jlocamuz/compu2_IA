@@ -1,6 +1,7 @@
 from random import uniform
 from Perceptron import Perceptron
 import numpy as np
+from multiprocessing import Pool
 
 class MLP:
 	#   mlp = MLP(IMG_SIZE, [HIDDEN_LAYER_PERCEPTRONS]*HIDDEN_LAYERS + [1], learning_rate=LR)
@@ -31,51 +32,49 @@ class MLP:
 			layer_inputs = np.array([p.run(layer_inputs) for p in layer])
 		return layer_inputs
 
-	def train(self, table: list[list[int]]) -> tuple[dict[str, list[float]], dict[str, list[float]]]:
+	def train_layer(self, delta, err_hist, i, row, layer):
+		for j, perceptron in enumerate(layer):
+			z = perceptron.last_output
+			y = row[-1]
+
+			# Comprobar si es el caso tradicional o es necesario estimar
+			if i == 0:
+				epsilon = y - z
+
+				# Guardar error en histograma
+				if f"{row}" not in err_hist:
+					err_hist[f"{row}"] = []
+				err_hist[f"{row}"].append(epsilon)
+						
+			else:
+				epsilon = delta
+						
+			# Calcular el delta
+			df = z*(1 - z)*epsilon                        
+					
+			# Hacer aprender al perceptron con los dW calculados
+			dw_list = [perceptron.learning_rate * x * df for x in perceptron.last_input]
+			perceptron.learn(dw_list)
+
+		# Supongo que cada capa utilizara la estimacion de la anterior
+		delta = df
+
+
+
+	def train(self, table: list[list[int]]):
 		"""
 		Entrena al MLP dada una tabla de valores y salidas esperadas.
-		Retorna w_hist: dict[str, list[float]], err_hist: dict[str, list[float]]
+
 		"""
 		delta = 0
-		w_hist = {}
 		err_hist = {}
 
 		for r, row in enumerate(table):
 			# Cargar el MLP de inputs y outputs en cada perceptron
 			self.run(row[:-1])
-			for i, layer in enumerate(reversed(self.layers)):
-				for j, perceptron in enumerate(layer):
-					z = perceptron.last_output
-					y = row[-1]
+			with Pool() as pool: # default proccesses = nro  nucleos pc q corre programa 
+				multiple_results = [pool.apply_async(self.train_layer(delta, err_hist, i, row, layer), ()) for i, layer in enumerate(reversed(self.layers))]
 
-					# Comprobar si es el caso tradicional o es necesario estimar
-					if i == 0:
-						epsilon = y - z
-
-						# Guardar error en histograma
-						if f"{row}" not in err_hist:
-							err_hist[f"{row}"] = []
-						err_hist[f"{row}"].append(epsilon)
-						
-					else:
-						epsilon = delta
-						
-					# Calcular el delta
-					df = z*(1 - z)*epsilon                        
-					
-					# Hacer aprender al perceptron con los dW calculados
-					dw_list = [perceptron.learning_rate * x * df for x in perceptron.last_input]
-					w_list = perceptron.learn(dw_list)
-
-					# Guardar pesos en el histograma
-					for k, w in enumerate(w_list):
-						if f"{i}{j}{k}" not in w_hist.keys():
-							w_hist[f"{i}{j}{k}"] = []
-						w_hist[f"{i}{j}{k}"].append(w)
-
-				# Supongo que cada capa utilizara la estimacion de la anterior
-				delta = df
-		return w_hist, err_hist
 		
 	def __str__(self) -> str:
 		s = ""

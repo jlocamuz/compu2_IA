@@ -40,10 +40,10 @@ while connected == True:
     rta_des = pickle.loads(rta)
     print(rta_des)
 
-    # mandamos test_img que queremos probar...
-    test_img = [f"6A{IDENTIF}", f"7A{IDENTIF}", f"8A{IDENTIF}", f"6B{IDENTIF}", f"7B{IDENTIF}", f"8B{IDENTIF}"]
+    # mandamos test_imgs que queremos probar...
+    TEST_IMAGES = [f"6A{IDENTIF}", f"7A{IDENTIF}", f"8A{IDENTIF}", f"6B{IDENTIF}", f"7B{IDENTIF}", f"8B{IDENTIF}"]
 
-    msg_s = pickle.dumps(test_img)
+    msg_s = pickle.dumps(TEST_IMAGES)
     client.send(msg_s)
 
     # recibimos resultado 
