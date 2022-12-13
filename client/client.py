@@ -7,11 +7,13 @@ import itertools
 import threading
 import sys
 
-PORT = 2222
+
 SERVER = '127.0.1.1' 
-ADDR = (SERVER, PORT)
+
 FORMAT = 'utf-8'
 parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser()
+parser.add_argument("-a", "--port", default=2222, type=int)
 parser.add_argument("-l", "--learningrate", default=0.5, type=float)
 parser.add_argument("-p", "--hiddenlayerperc", default=100, type=int)
 parser.add_argument("--layers", default=1, type=int)
@@ -21,10 +23,13 @@ parser.add_argument("--extention", type=str, default="jpg")
 parser.add_argument("--identif", type=str, default="57190")
 
 args = parser.parse_args()
+PORT = args.port
+port = PORT
 
+connected = True
+ADDR = (SERVER, PORT)
 client = socket.socket()
 client.connect(ADDR)
-connected = True
 
 done = False
 #here is the animation

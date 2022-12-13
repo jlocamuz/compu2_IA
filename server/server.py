@@ -7,12 +7,18 @@ import cv2
 import numpy as np
 import tqdm
 from MLP import MLP
-
+import argparse
 
 MAX_SIZE=512
 KEY="12135"
 
 TODAY=datetime.datetime.now().strftime("%d-%m-%Y_%H:%M:%S")
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-p", "--port", default=2222, type=int)
+args = parser.parse_args()
+PORT = args.port
+port = PORT
 
 
 def th_server(sock_full):
@@ -112,7 +118,6 @@ serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 # get local machine name
 #host = socket.gethostname()
 host = socket.gethostbyname(socket.gethostname()) 
-port= 2222 # ****
 
 # bind to the port
 serversocket.bind((host, port))
