@@ -57,9 +57,10 @@ services:
     depends_on:
       - server
 
+
   client2:
     build: client/
     command: bash -c "python3 client.py -i 10 --folder marian --identif 59161"
     network_mode: host
     depends_on:
-      - server
+      - client
